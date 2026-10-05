@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-shell">
+      <div class="auth-visual">
+        <div class="brand-badge">Ecommerce AI</div>
+        <h1>Create your account and unlock smarter forecasting.</h1>
+        <p>Track customer spending behavior, compare channels, and predict revenue with confidence.</p>
+      </div>
+
+      <div class="auth-card">
+        <h2>Create account</h2>
+        <p class="subtitle">Register to continue</p>
+
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/register">
+          <label for="full_name">Full name</label>
+          <input id="full_name" name="full_name" type="text" required />
+
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required />
+
+          <label for="confirm_password">Confirm password</label>
+          <input id="confirm_password" name="confirm_password" type="password" required />
+
+          <button type="submit">Register</button>
+        </form>
+
+        <div class="auth-links">
+          <span>Already have an account?</span>
+          <a href="/login">Login</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

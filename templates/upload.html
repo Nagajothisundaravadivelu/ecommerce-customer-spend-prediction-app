@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV Upload | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="brand">Ecommerce AI</div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/predict">Prediction</a>
+        <a href="/upload" class="active">CSV Upload</a>
+        <a href="/profile">Profile</a>
+        {% if user.role == 'admin' %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container narrow">
+      <section class="card panel-card">
+        <h1>Bulk prediction upload</h1>
+        <p>Upload a CSV with the fields: Avg. Session Length, Time on App, Time on Website, Length of Membership.</p>
+
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/upload" enctype="multipart/form-data" class="upload-form">
+          <input type="file" name="file" accept=".csv" required />
+          <button type="submit">Upload and predict</button>
+        </form>
+      </section>
+
+      {% if result %}
+      <section class="card panel-card table-card">
+        <h2>Prediction results</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Avg. Session</th>
+                <th>Time on App</th>
+                <th>Time on Website</th>
+                <th>Membership</th>
+                <th>Predicted Amount</th>
+                <th>Best Channel</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in result %}
+              <tr>
+                <td>{{ item.avg_session_length }}</td>
+                <td>{{ item.time_on_app }}</td>
+                <td>{{ item.time_on_website }}</td>
+                <td>{{ item.length_of_membership }}</td>
+                <td>${{ '%.2f' | format(item.predicted_amount) }}</td>
+                <td>{{ item.best_channel }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      {% endif %}
+    </main>
+  </body>
+</html>
