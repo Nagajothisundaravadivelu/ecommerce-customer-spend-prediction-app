@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="brand">Ecommerce AI</div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/predict">Prediction</a>
+        <a href="/upload">CSV Upload</a>
+        <a href="/profile" class="active">Profile</a>
+        {% if user.role == 'admin' %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container narrow">
+      <section class="card panel-card profile-card">
+        <h1>My Profile</h1>
+        {% if success %}
+        <div class="alert success">{{ success }}</div>
+        {% endif %}
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/profile" class="profile-form">
+          <label>Full name
+            <input type="text" name="full_name" value="{{ user.full_name }}" required />
+          </label>
+
+          <label>Username
+            <input type="text" value="{{ user.username }}" disabled />
+          </label>
+
+          <label>Email
+            <input type="email" name="email" value="{{ user.email }}" required />
+          </label>
+
+          <label>New password
+            <input type="password" name="password" placeholder="Leave blank to keep current password" />
+          </label>
+
+          <label>Confirm new password
+            <input type="password" name="confirm_password" placeholder="Leave blank to keep current password" />
+          </label>
+
+          <button type="submit">Save changes</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
