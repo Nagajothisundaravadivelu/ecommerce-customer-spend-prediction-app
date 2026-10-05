@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="brand">Ecommerce AI</div>
+      <div class="nav-links">
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/predict">Prediction</a>
+        <a href="/upload">CSV Upload</a>
+        <a href="/profile">Profile</a>
+        {% if is_admin %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Welcome back</p>
+          <h1>Hello, {{ full_name or username }}!</h1>
+        </div>
+        <span class="pill">Best channel: {{ best_channel }}</span>
+      </section>
+
+      <section class="cards-grid">
+        <div class="card stat-card accent-blue">
+          <span class="label">Customer records</span>
+          <strong>{{ rows }}</strong>
+        </div>
+        <div class="card stat-card accent-green">
+          <span class="label">Best channel</span>
+          <strong>{{ best_channel }}</strong>
+        </div>
+        <div class="card stat-card accent-purple">
+          <span class="label">Model intercept</span>
+          <strong>{{ '%.2f' | format(intercept) }}</strong>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <div class="card panel-card summary-panel">
+          <div class="panel-header">
+            <h2>Model summary</h2>
+            <span class="muted-label">AI overview</span>
+          </div>
+          <p class="summary-text">{{ summary }}</p>
+          <div class="feature-list">
+            {% for feature, value in coefficients.items() %}
+            <div class="feature-pill">
+              <span class="feature-name">{{ feature }}</span>
+              <span class="feature-value">{{ '%.4f' | format(value) }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="card panel-card insight-panel">
+          <div class="panel-header">
+            <h2>Key insights</h2>
+            <span class="muted-label">Quick stats</span>
+          </div>
+          <div class="insight-box">
+            <span class="label">Best channel</span>
+            <strong>{{ best_channel }}</strong>
+          </div>
+          <div class="insight-box accent-soft">
+            <span class="label">Model intercept</span>
+            <strong>{{ '%.2f' | format(intercept) }}</strong>
+          </div>
+          <div class="insight-box">
+            <span class="label">Training rows</span>
+            <strong>{{ rows }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="card panel-card dashboard-panel">
+        <div class="panel-header">
+          <h2>Feature impact</h2>
+          <span class="muted-label">Coefficient strength</span>
+        </div>
+        <div class="chart-list">
+          {% for feature, value in coefficients.items() %}
+          {% set pct = (value / max_abs_coefficient * 100) if max_abs_coefficient else 0 %}
+          <div class="chart-row">
+            <div class="chart-meta">
+              <span>{{ feature }}</span>
+              <strong>{{ '%.4f' | format(value) }}</strong>
+            </div>
+            <div class="chart-track">
+              <span class="chart-bar" style="width: {{ pct|round(1) }}%;"></span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="card panel-card dashboard-panel">
+        <div class="panel-header">
+          <h2>Recent predictions</h2>
+          <span class="muted-label">Your latest activity</span>
+        </div>
+        {% if recent_predictions %}
+        <div class="mini-table-wrap">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Amount</th>
+                <th>Best channel</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in recent_predictions %}
+              <tr>
+                <td>${{ '%.2f' | format(item.predicted_amount) }}</td>
+                <td>{{ item.best_channel }}</td>
+                <td>{{ item.created_at }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="empty-state">No predictions yet. Try the prediction or CSV upload tools.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="brand">Ecommerce AI</div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/predict">Prediction</a>
+        <a href="/upload">CSV Upload</a>
+        <a href="/profile">Profile</a>
+        <a href="/admin" class="active">Admin</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="hero admin-hero">
+        <div>
+          <p class="eyebrow">Admin panel</p>
+          <h1>System overview</h1>
+        </div>
+        <span class="pill">Role: {{ user.role }}</span>
+      </section>
+
+      <section class="cards-grid">
+        <div class="card stat-card accent-blue">
+          <span class="label">Total users</span>
+          <strong>{{ stats.total_users }}</strong>
+        </div>
+        <div class="card stat-card accent-purple">
+          <span class="label">Admins</span>
+          <strong>{{ stats.total_admins }}</strong>
+        </div>
+        <div class="card stat-card accent-green">
+          <span class="label">Customers</span>
+          <strong>{{ stats.total_customers }}</strong>
+        </div>
+        <div class="card stat-card accent-orange">
+          <span class="label">Predictions</span>
+          <strong>{{ stats.total_predictions }}</strong>
+        </div>
+      </section>
+
+      <section class="card panel-card table-card">
+        <h2>Registered users</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Full name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in users %}
+              <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.full_name }}</td>
+                <td>{{ row.username }}</td>
+                <td>{{ row.email }}</td>
+                <td><span class="role-badge {{ row.role }}">{{ row.role }}</span></td>
+                <td>{{ row.created_at }}</td>
+                <td class="action-cell">
+                  <form method="post" action="/admin/user/{{ row.id }}/role" class="inline-form">
+                    <select name="role" aria-label="Change role for {{ row.username }}">
+                      <option value="user" {% if row.role == 'user' %}selected{% endif %}>User</option>
+                      <option value="admin" {% if row.role == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                    <button type="submit" class="secondary-btn">Update</button>
+                  </form>
+                  <form method="post" action="/admin/user/{{ row.id }}/delete" class="inline-form danger-form" onsubmit="return confirm('Delete this user?');">
+                    <button type="submit" class="danger-btn">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
