@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prediction | Ecommerce Portal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="brand">Ecommerce AI</div>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/predict" class="active">Prediction</a>
+        <a href="/upload">CSV Upload</a>
+        <a href="/profile">Profile</a>
+        {% if user.role == 'admin' %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+      </div>
+    </nav>
+
+    <main class="container narrow">
+      <section class="card panel-card">
+        <h1>Customer Spend Prediction</h1>
+        <p>Enter the customer session and membership values to estimate yearly spend.</p>
+
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/predict" class="predict-form">
+          <div class="field-row">
+            <label>Avg. Session Length
+              <input type="number" step="0.01" name="avg_session_length" value="34.5" required />
+            </label>
+            <label>Time on App
+              <input type="number" step="0.01" name="time_on_app" value="12.7" required />
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>Time on Website
+              <input type="number" step="0.01" name="time_on_website" value="39.5" required />
+            </label>
+            <label>Length of Membership
+              <input type="number" step="0.01" name="length_of_membership" value="4.1" required />
+            </label>
+          </div>
+
+          <button type="submit">Predict Spend</button>
+        </form>
+      </section>
+
+      {% if result %}
+      <section class="card result-card">
+        <h2>Prediction result</h2>
+        <div class="result-value">$ {{ '%.2f' | format(result.predicted_yearly_amount_spent) }}</div>
+        <ul class="result-list">
+          <li><strong>Best channel:</strong> {{ result.best_channel }}</li>
+          <li><strong>App coefficient:</strong> {{ '%.4f' | format(result.channel_coefficients.app) }}</li>
+          <li><strong>Website coefficient:</strong> {{ '%.4f' | format(result.channel_coefficients.website) }}</li>
+        </ul>
+      </section>
+      {% endif %}
+    </main>
+  </body>
+</html>
